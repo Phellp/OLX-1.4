@@ -1,0 +1,29 @@
+{
+  "qInfo": {
+    "qId": "mJGRtX",
+    "qType": "measure"
+  },
+  "qMeasure": {
+    "qLabel": "Contagem_Aluguel",
+    "qDef": "count({<Situacao = {\"Para alugar\"}>}Titulo)",
+    "qGrouping": "N",
+    "qExpressions": [],
+    "qActiveExpression": 0,
+    "qNumFormat": {
+      "qType": "U",
+      "qnDec": 10,
+      "qUseThou": 0
+    },
+    "coloring": {
+      "baseColor": {
+        "color": "#8e477d",
+        "index": 7
+      }
+    }
+  },
+  "qMetaDef": {
+    "title": "Contagem_Aluguel",
+    "description": "",
+    "tags": []
+  }
+}

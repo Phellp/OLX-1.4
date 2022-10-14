@@ -1,0 +1,15 @@
+{
+  "qInfo": {
+    "qId": "687e1073-a1ad-4b22-a828-e4ccb2a1def8",
+    "qType": "variable"
+  },
+  "qMetaDef": {},
+  "qName": "vUrl",
+  "qNumberPresentation": {
+    "qType": "U",
+    "qnDec": 10,
+    "qUseThou": 0
+  },
+  "qDefinition": "https://ba.olx.com.br/grande-salvador/salvador/imoveis?o=",
+  "qIsScriptCreated": true
+}

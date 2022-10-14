@@ -1,0 +1,419 @@
+///$tab Main
+SET ThousandSep='.';
+SET DecimalSep=',';
+SET MoneyThousandSep='.';
+SET MoneyDecimalSep=',';
+SET MoneyFormat='R$#.##0,00;-R$#.##0,00';
+SET TimeFormat='hh:mm:ss';
+SET DateFormat='DD/MM/YYYY';
+SET TimestampFormat='DD/MM/YYYY hh:mm:ss[.fff]';
+SET FirstWeekDay=6;
+SET BrokenWeeks=1;
+SET ReferenceDay=0;
+SET FirstMonthOfYear=1;
+SET CollationLocale='pt-BR';
+SET CreateSearchIndexOnReload=1;
+SET MonthNames='jan;fev;mar;abr;mai;jun;jul;ago;set;out;nov;dez';
+SET LongMonthNames='janeiro;fevereiro;março;abril;maio;junho;julho;agosto;setembro;outubro;novembro;dezembro';
+SET DayNames='seg;ter;qua;qui;sex;sáb;dom';
+SET LongDayNames='segunda-feira;terça-feira;quarta-feira;quinta-feira;sexta-feira;sábado;domingo';
+SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+
+///$tab Extraction
+Let vUrl = 'https://ba.olx.com.br/grande-salvador/salvador/imoveis?o=';
+
+//Let vData = Right(Replace(Today(),'/',''),6);
+Let vData = Replace(Today(),'/','');
+
+For i=1 to 100
+
+
+Site:
+
+Load
+	
+    TextBetween(html, '<h2 data-ds-component="DS-Text" title="', '" aria-hidden="true"') as Titulo,
+    TextBetween(html, 'label="Preço do item: R$ ', '." class="') as Preço,
+    TextBetween(html, '<div class="sc-1c3ysll-0 lfQETj"><span data-ds-component="DS-Text" title="', '" aria-label="Localização:') as Local,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>') as Situacao,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 3) as N_Quartos,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 5) as MM²,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 7) as R$_condominio,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 9) as N_Vagas,
+    TextBetween(html, 'color="--color-neutral-darkest" display="block">Ontem, ', '</span>') as Hora_ontem,
+    TextBetween(html, 'color="--color-neutral-darkest" display="block">Hoje, ', '</span>') as Hora_Hoje,
+    TextBetween(html, '<img src="', '.jpg" alt="')& '.jpg' as Imagem,
+    TextBetween(html, '" href="', '" target=') as Link
+  //Null() as Imagem
+;
+
+
+
+Load 
+	subfield([@1:N], '<li') as html
+From 'lib://olx'
+(url is [$(vUrl)$(i)], html, fix, utf8, no labels);
+
+Next;
+
+Store Site into 'lib://base_olx_extraction/site$(vData).qvd'(qvd);
+Drop Table Site;
+
+///$tab Transform 1
+Unqualify *;
+
+// ########################### Tratamento de campos informativos ####################################
+
+// ########################### Transforma "Vagas" ###################################################
+[Vagas_temp_1]:
+Load Distinct
+	[Titulo],
+	[Preço],
+	//[Local],
+	[Situacao],
+	[N_Quartos],
+	[MM²],
+    [R$_condominio],
+    if((isNull([N_Vagas]) and WildMatch([R$_condominio], '*vagas*','*vaga*' )),
+    	[R$_condominio],[N_Vagas]) as [N_Vagas],
+	[Hora_ontem],
+	[Hora_Hoje],
+	if(index([Local], ',', 1) > 0, left([Local], index([Local], ',', 1) - 1), [Local]) AS [Cidade],
+	if(index([Local], ',', 1) > 0, mid([Local], index([Local], ',', 1) + 1), null()) AS [Bairro],
+    [Link],
+    [Imagem]
+From 'lib://base_olx_extraction/site*.qvd'(qvd);
+// Resident [Site];
+// Drop Table [Site];
+
+NoConcatenate
+
+[Vagas_temp_2]:
+Load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	[MM²],
+    [R$_condominio],
+	if(isNull([N_Vagas]) and WildMatch([MM²], '*vagas*','*vaga*' ),
+    [MM²],[N_Vagas]) as [N_Vagas],
+	[Hora_ontem],
+	[Hora_Hoje],
+	[Cidade],
+	[Bairro],
+    [Link],
+    [Imagem];
+    
+
+NoConcatenate
+
+[Vagas_temp_3]:
+Load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	If(WildMatch([MM²], '*vagas*','*vaga*' ), null(),[MM²]) as [MM²],
+    If(WildMatch([R$_condominio], '*vagas*','*vaga*' ), null(),[R$_condominio]) as [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+Resident [Vagas_temp_1];
+
+Drop Table [Vagas_temp_1];
+
+
+// ########################### Transforma "Condominio" ##################################################
+[Cond_temp_1]:
+NoConcatenate
+load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	[MM²],
+	If(IsNull([R$_condominio]) and WildMatch([MM²], '*Cond*', '*cond*'),
+    [MM²], [R$_condominio]) as [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+
+
+NoConcatenate
+
+[Cond_temp_2]:
+load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	[MM²],
+	If(IsNull([R$_condominio]) and WildMatch([Situacao], '*Cond*', '*cond*'),
+    [Situacao], [R$_condominio]) as [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+
+
+NoConcatenate
+
+[Cond_temp_4]:
+load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	[MM²],
+	If(IsNull([R$_condominio]) and WildMatch([N_Quartos], '*Condomínio*', '*cond*'),
+    [N_Quartos], [R$_condominio]) as [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+
+NoConcatenate
+[Cond_temp_5]:
+Load
+	[Titulo],
+	[Preço],
+    If(WildMatch([Situacao], '*Condomínio*', '*cond*'), null(),[Situacao]) as [Situacao],
+	If(WildMatch([N_Quartos], '*Condomínio*', '*cond*'), null(),[N_Quartos]) as [N_Quartos],
+	If(WildMatch([MM²], '*Condomínio*', '*cond*'), null(),[MM²]) as [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+Resident [Vagas_temp_3];
+Drop Table [Vagas_temp_3];
+// ########################### Transforma "MM²" ##################################################
+
+NoConcatenate
+[MM²_temp_1]:
+load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	if(IsNull([MM²]) and WildMatch([N_Quartos], '*m²*'),[N_Quartos],[MM²]) as [MM²],
+	[R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+    
+NoConcatenate   
+
+[MM²_temp_2]:
+load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	[N_Quartos],
+	if(IsNull([MM²]) and WildMatch([Situacao], '*m²*'),[Situacao],[MM²]) as [MM²],
+	[R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+
+NoConcatenate
+
+[MM²_temp_3]:
+Load
+	[Titulo],
+	[Preço],
+	If(WildMatch([Situacao], '*m²*'), null(),[Situacao]) as [Situacao],
+	If(WildMatch([N_Quartos], '*m²*'), null(),[N_Quartos]) as [N_Quartos],
+	[MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+    
+Resident [Cond_temp_5];
+Drop Table [Cond_temp_5];
+// ########################### Transforma "N_Quartos" ##################################################
+NoConcatenate
+[N_Quartos_temp_1]:
+Load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	if(WildMatch([N_Quartos],'*Acomoda*'), Null(),[N_Quartos]) as [N_Quartos],
+	[MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+NoConcatenate    
+[N_Quartos_temp_2]:
+Load
+	[Titulo],
+	[Preço],
+	[Situacao],
+	if(WildMatch([Situacao], '*quarto*'),[Situacao],[N_Quartos]) as [N_Quartos],
+	[MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem];
+NoConcatenate    
+[N_Quartos_temp_3]:
+Load
+	[Titulo],
+	[Preço],
+	if(WildMatch([Situacao], '*quarto*'),Null(),[Situacao]) as [Situacao],
+	[N_Quartos],
+	[MM²],
+    KeepChar([R$_condominio], 0123456789) as [R$_condominio],
+    [N_Vagas],
+    [Hora_ontem],
+	[Hora_Hoje],
+    [Cidade],
+    [Link],
+    [Bairro],
+    if(WildMatch([Imagem], '.jpg'), Null(), [Imagem]) as [Imagem]
+
+Resident [MM²_temp_3];
+Drop Table [MM²_temp_3];
+Rename Table [N_Quartos_temp_3] to [Base_tratada];
+Store Base_tratada into 'lib://base_olx_transform/Transform_1__site_normalizado.qvd'(qvd);
+Drop Table [Base_tratada];
+
+
+
+
+
+
+///$tab Transform 2
+//####################################### Unificando as informações de data ###############################
+NoConcatenate
+[data_temp]:
+Load
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    if(not isnull([Hora_ontem]),Text(date(Today()-1) & ' ' &[Hora_ontem])) as [Hora_ontem],
+    if(not isnull([Hora_Hoje]),Text(Today() & ' ' &[Hora_Hoje])) as [Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+From 'lib://base_olx_transform/Transform_1__site_normalizado.qvd'(qvd);
+
+NoConcatenate
+
+[data_temp_1]:
+Load   
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    //[Hora_ontem],
+    //[Hora_Hoje],
+    if(isnull([Hora_Hoje]),[Hora_ontem],[Hora_Hoje]) as [Data_anuncio],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+Resident [data_temp];
+Drop Table [data_temp];
+
+NoConcatenate
+
+[data_temp_2]:
+LOAD
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Cidade],
+    [Bairro],
+    [Imagem],
+    [Link],
+    Timestamp#([Data_anuncio]) AS [Data_anuncio]
+Resident [data_temp_1];
+Drop Table [data_temp_1];
+
+[data_temp_3]:
+Load 
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Cidade],
+    [Bairro],
+    [Imagem],
+    [Link],
+	Left([Data_anuncio],10) as [Data_anuncio],
+    Right([Data_anuncio],5) as [Hora_anuncio]
+Resident [data_temp_2];
+Drop Table [data_temp_2];
+
+store [data_temp_3] into 'lib://base_olx_transform/Transform_2__site_normalizado.qvd'(qvd);
+Drop Table [data_temp_3];
+
+Load*
+From 'lib://base_olx_transform/Transform_2__site_normalizado.qvd'(qvd);
+//########################## Proximos passo #############################
+/* 
+1 - Tratar outliers
+
+2 - Cruzar com informações socio economicas 
+
+3 - Melhorar o web scrapping
+
+4 - Criar indicador de idade/ ciclo de vida dos anuncios 
+
+*/

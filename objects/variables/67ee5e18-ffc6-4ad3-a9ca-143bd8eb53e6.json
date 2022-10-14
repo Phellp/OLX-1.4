@@ -1,0 +1,14 @@
+{
+  "qInfo": {
+    "qId": "67ee5e18-ffc6-4ad3-a9ca-143bd8eb53e6",
+    "qType": "variable"
+  },
+  "qMetaDef": {},
+  "qName": "vDataInicio",
+  "qNumberPresentation": {
+    "qType": "U",
+    "qnDec": 10,
+    "qUseThou": 0
+  },
+  "qDefinition": "220701"
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "qProperty": {
+      "qInfo": {
+        "qId": "76d39875-8b61-4d2b-804f-8f8620f3b3f6",
+        "qType": "appprops"
+      },
+      "qMetaDef": {},
+      "sheetTitleBgColor": {
+        "color": "#B1A2CA",
+        "index": -1
+      },
+      "sheetTitleGradientColor": {
+        "color": "#c6e5b1",
+        "index": -1
+      },
+      "sheetTitleColor": "#B1A2CA",
+      "sheetLogoThumbnail": {
+        "qStaticContentUrlDef": {
+          "qUrl": "/media/Logo_olx.png"
+        }
+      },
+      "sheetLogoPosition": "left",
+      "rtl": false,
+      "theme": "sense",
+      "disableCellNavMenu": false
+    },
+    "qChildren": []
+  }
+]

@@ -1,0 +1,128 @@
+[
+  {
+    "qName": "Bairro",
+    "qTags": [
+      "$text"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Cidade",
+    "qTags": [
+      "$text",
+      "$ascii"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Data_anuncio",
+    "qTags": [
+      "$text",
+      "$ascii"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Hora_anuncio",
+    "qTags": [
+      "$numeric"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Imagem",
+    "qTags": [
+      "$text",
+      "$ascii"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Link",
+    "qTags": [
+      "$text",
+      "$ascii"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "MM²",
+    "qTags": [
+      "$text"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "N_Quartos",
+    "qTags": [
+      "$text",
+      "$ascii"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "N_Vagas",
+    "qTags": [
+      "$text",
+      "$ascii"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Preço",
+    "qTags": [
+      "$numeric",
+      "$integer"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "R$_condominio",
+    "qTags": [
+      "$text",
+      "$numeric",
+      "$integer"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Situacao",
+    "qTags": [
+      "$text"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  },
+  {
+    "qName": "Titulo",
+    "qTags": [
+      "$text"
+    ],
+    "qSrcTables": [
+      "Transform_2__site_normalizado"
+    ]
+  }
+]

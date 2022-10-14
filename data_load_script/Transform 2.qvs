@@ -1,0 +1,94 @@
+///$tab Transform 2
+//####################################### Unificando as informações de data ###############################
+NoConcatenate
+[data_temp]:
+Load
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    if(not isnull([Hora_ontem]),Text(date(Today()-1) & ' ' &[Hora_ontem])) as [Hora_ontem],
+    if(not isnull([Hora_Hoje]),Text(Today() & ' ' &[Hora_Hoje])) as [Hora_Hoje],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+From 'lib://base_olx_transform/Transform_1__site_normalizado.qvd'(qvd);
+
+NoConcatenate
+
+[data_temp_1]:
+Load   
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    //[Hora_ontem],
+    //[Hora_Hoje],
+    if(isnull([Hora_Hoje]),[Hora_ontem],[Hora_Hoje]) as [Data_anuncio],
+    [Cidade],
+    [Bairro],
+    [Link],
+    [Imagem]
+Resident [data_temp];
+Drop Table [data_temp];
+
+NoConcatenate
+
+[data_temp_2]:
+LOAD
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Cidade],
+    [Bairro],
+    [Imagem],
+    [Link],
+    Timestamp#([Data_anuncio]) AS [Data_anuncio]
+Resident [data_temp_1];
+Drop Table [data_temp_1];
+
+[data_temp_3]:
+Load 
+    [Titulo],
+    [Preço],
+    [Situacao],
+    [N_Quartos],
+    [MM²],
+    [R$_condominio],
+    [N_Vagas],
+    [Cidade],
+    [Bairro],
+    [Imagem],
+    [Link],
+	Left([Data_anuncio],10) as [Data_anuncio],
+    Right([Data_anuncio],5) as [Hora_anuncio]
+Resident [data_temp_2];
+Drop Table [data_temp_2];
+
+store [data_temp_3] into 'lib://base_olx_transform/Transform_2__site_normalizado.qvd'(qvd);
+Drop Table [data_temp_3];
+
+Load*
+From 'lib://base_olx_transform/Transform_2__site_normalizado.qvd'(qvd);
+//########################## Proximos passo #############################
+/* 
+1 - Tratar outliers
+
+2 - Cruzar com informações socio economicas 
+
+3 - Melhorar o web scrapping
+
+4 - Criar indicador de idade/ ciclo de vida dos anuncios 
+
+*/

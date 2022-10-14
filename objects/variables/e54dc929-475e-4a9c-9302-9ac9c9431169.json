@@ -1,0 +1,14 @@
+{
+  "qInfo": {
+    "qId": "e54dc929-475e-4a9c-9302-9ac9c9431169",
+    "qType": "variable"
+  },
+  "qMetaDef": {},
+  "qName": "offset",
+  "qNumberPresentation": {
+    "qType": "U",
+    "qnDec": 10,
+    "qUseThou": 0
+  },
+  "qDefinition": "-1"
+}

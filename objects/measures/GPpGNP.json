@@ -1,0 +1,24 @@
+{
+  "qInfo": {
+    "qId": "GPpGNP",
+    "qType": "measure"
+  },
+  "qMeasure": {
+    "qLabel": "Soma_Condominio",
+    "qDef": "sum({<Situacao={\"Para alugar\"}>}[R$_condominio])",
+    "qGrouping": "N",
+    "qExpressions": [],
+    "qActiveExpression": 0,
+    "qNumFormat": {
+      "qType": "U",
+      "qnDec": 10,
+      "qUseThou": 0
+    },
+    "coloring": {}
+  },
+  "qMetaDef": {
+    "title": "Soma_Condominio",
+    "description": "",
+    "tags": []
+  }
+}

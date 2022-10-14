@@ -1,0 +1,24 @@
+{
+  "qInfo": {
+    "qId": "FkFkpPt",
+    "qType": "measure"
+  },
+  "qMeasure": {
+    "qLabel": "Soma_Aluguel",
+    "qDef": "sum({<Situacao = {\"Para alugar\"}>} [Preço])",
+    "qGrouping": "N",
+    "qExpressions": [],
+    "qActiveExpression": 0,
+    "qNumFormat": {
+      "qType": "U",
+      "qnDec": 10,
+      "qUseThou": 0
+    },
+    "coloring": {}
+  },
+  "qMetaDef": {
+    "title": "Soma_Aluguel",
+    "description": "",
+    "tags": []
+  }
+}

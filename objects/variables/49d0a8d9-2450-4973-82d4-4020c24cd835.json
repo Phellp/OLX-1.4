@@ -1,0 +1,14 @@
+{
+  "qInfo": {
+    "qId": "49d0a8d9-2450-4973-82d4-4020c24cd835",
+    "qType": "variable"
+  },
+  "qMetaDef": {},
+  "qName": "vMes",
+  "qNumberPresentation": {
+    "qType": "U",
+    "qnDec": 10,
+    "qUseThou": 0
+  },
+  "qDefinition": "202207"
+}

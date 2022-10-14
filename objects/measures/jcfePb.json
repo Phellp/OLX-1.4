@@ -1,0 +1,29 @@
+{
+  "qInfo": {
+    "qId": "jcfePb",
+    "qType": "measure"
+  },
+  "qMeasure": {
+    "qLabel": "Contagem_Venda",
+    "qDef": "Count({<Situacao={\"À venda\"}>} Titulo)",
+    "qGrouping": "N",
+    "qExpressions": [],
+    "qActiveExpression": 0,
+    "qNumFormat": {
+      "qType": "U",
+      "qnDec": 10,
+      "qUseThou": 0
+    },
+    "coloring": {
+      "baseColor": {
+        "color": "#46c646",
+        "index": 2
+      }
+    }
+  },
+  "qMetaDef": {
+    "title": "Contagem_Venda",
+    "description": "",
+    "tags": []
+  }
+}

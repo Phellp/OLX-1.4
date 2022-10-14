@@ -1,0 +1,14 @@
+{
+  "qInfo": {
+    "qId": "74f194b8-69d2-416b-803a-2df26c406b35",
+    "qType": "variable"
+  },
+  "qMetaDef": {},
+  "qName": "dt_ini",
+  "qNumberPresentation": {
+    "qType": "U",
+    "qnDec": 10,
+    "qUseThou": 0
+  },
+  "qDefinition": "01/08/2022"
+}

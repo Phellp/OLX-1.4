@@ -1,0 +1,24 @@
+{
+  "qInfo": {
+    "qId": "SyVEGu",
+    "qType": "dimension"
+  },
+  "qDim": {
+    "qGrouping": "H",
+    "qFieldDefs": [
+      "=Data_anuncio",
+      "=Hora_anuncio"
+    ],
+    "qFieldLabels": [],
+    "title": "data",
+    "coloring": {
+      "changeHash": "0.13163660124661436",
+      "colorMapRef": "SyVEGu"
+    }
+  },
+  "qMetaDef": {
+    "title": "data",
+    "description": "",
+    "tags": []
+  }
+}

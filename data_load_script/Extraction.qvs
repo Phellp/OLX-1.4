@@ -1,0 +1,39 @@
+///$tab Extraction
+Let vUrl = 'https://ba.olx.com.br/grande-salvador/salvador/imoveis?o=';
+
+//Let vData = Right(Replace(Today(),'/',''),6);
+Let vData = Replace(Today(),'/','');
+
+For i=1 to 100
+
+
+Site:
+
+Load
+	
+    TextBetween(html, '<h2 data-ds-component="DS-Text" title="', '" aria-hidden="true"') as Titulo,
+    TextBetween(html, 'label="Preço do item: R$ ', '." class="') as Preço,
+    TextBetween(html, '<div class="sc-1c3ysll-0 lfQETj"><span data-ds-component="DS-Text" title="', '" aria-label="Localização:') as Local,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>') as Situacao,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 3) as N_Quartos,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 5) as MM²,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 7) as R$_condominio,
+    TextBetween(html, 'color="dark" font-weight="400">', '</span>', 9) as N_Vagas,
+    TextBetween(html, 'color="--color-neutral-darkest" display="block">Ontem, ', '</span>') as Hora_ontem,
+    TextBetween(html, 'color="--color-neutral-darkest" display="block">Hoje, ', '</span>') as Hora_Hoje,
+    TextBetween(html, '<img src="', '.jpg" alt="')& '.jpg' as Imagem,
+    TextBetween(html, '" href="', '" target=') as Link
+  //Null() as Imagem
+;
+
+
+
+Load 
+	subfield([@1:N], '<li') as html
+From 'lib://olx'
+(url is [$(vUrl)$(i)], html, fix, utf8, no labels);
+
+Next;
+
+Store Site into 'lib://base_olx_extraction/site$(vData).qvd'(qvd);
+Drop Table Site;

@@ -1,0 +1,14 @@
+{
+  "qInfo": {
+    "qId": "74f7b6e8-e965-4c7a-af5f-cb53a491fdc8",
+    "qType": "variable"
+  },
+  "qMetaDef": {},
+  "qName": "vD_Hoje",
+  "qNumberPresentation": {
+    "qType": "U",
+    "qnDec": 10,
+    "qUseThou": 0
+  },
+  "qDefinition": "082022"
+}
